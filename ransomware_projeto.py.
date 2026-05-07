@@ -1,0 +1,49 @@
+import os
+from cryptography.fernet import Fernet
+
+# --- PASSO 1: Gerar e salvar a chave de criptografia ---
+def gerar_chave():
+    chave = Fernet.generate_key()
+    with open("chave.key", "wb") as key_file:
+        key_file.write(chave)
+    print("Chave 'chave.key' gerada com sucesso.")
+
+# --- PASSO 2: Criptografar o arquivo ---
+def criptografar_arquivo(nome_arquivo):
+    with open("chave.key", "rb") as key_file:
+        chave = key_file.read()
+    
+    fernet = Fernet(chave)
+    
+    with open(nome_arquivo, "rb") as file:
+        conteudo = file.read()
+    
+    conteudo_criptografado = fernet.encrypt(conteudo)
+    
+    with open(nome_arquivo + ".encrypted", "wb") as file:
+        file.write(conteudo_criptografado)
+    
+    print(f"Arquivo {nome_arquivo} criptografado para {nome_arquivo}.encrypted")
+
+# --- PASSO 3: Descriptografar (A Solução) ---
+def descriptografar_arquivo(nome_arquivo_criptografado):
+    with open("chave.key", "rb") as key_file:
+        chave = key_file.read()
+    
+    fernet = Fernet(chave)
+    
+    with open(nome_arquivo_criptografado, "rb") as file:
+        conteudo_cripto = file.read()
+    
+    conteudo_original = fernet.decrypt(conteudo_cripto)
+    
+    with open("arquivo_recuperado.txt", "wb") as file:
+        file.write(conteudo_original)
+    
+    print("Arquivo descriptografado com sucesso como 'arquivo_recuperado.txt'")
+
+# --- TESTE DO DESAFIO ---
+# 1. Crie um arquivo de texto manual antes de rodar
+# 2. Chame as funções:
+# gerar_chave()
+# criptografar_arquivo("teste.txt")
